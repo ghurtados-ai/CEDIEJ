@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CEDIEJ - Centro de Datos e Información de Expedientes Judiciales</title>
+    <!-- Fonts and Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Light Theme */
+            --primary-color: #0b4a2c; /* Institutional Dark Green */
+            --primary-light: #167a4a;
+            --bg-color: #f4f6f8;
+            --surface-color: #ffffff;
+            --text-main: #2d3748;
+            --text-muted: #718096;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --danger-color: #e53e3e;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+        }
+
+        [data-theme="dark"] {
+            /* Dark Theme */
+            --primary-color: #1a6f44;
+            --primary-light: #2b9e66;
+            --bg-color: #1a202c;
+            --surface-color: #2d3748;
+            --text-main: #f7fafc;
+            --text-muted: #a0aec0;
+            --border-color: #4a5568;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.4);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.5);
+            --glass-bg: rgba(45, 55, 72, 0.8);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            padding-bottom: 60px; /* Space for timer */
+        }
+
+        /* Header */
+        header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .logo span {
+            font-size: 0.85rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .clock-container {
+            font-size: 0.95rem;
+            font-weight: 500;
+            background: rgba(0,0,0,0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        .theme-toggle {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* Main Container */
+        main {
+            flex: 1;
+            padding: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Cards/Containers */
+        .card {
+            background: var(--surface-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        h2 {
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        [data-theme="dark"] h2 {
+            color: var(--primary-light);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s ease;
+        }
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+        [data-theme="dark"] .tab-btn.active {
+            color: var(--primary-light);
+            border-bottom-color: var(--primary-light);
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.2rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-main);
+            font-size: 0.9rem;
+        }
+        input, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-color);
+            color: var(--text-main);
+            outline: none;
+            font-size: 1rem;
+        }
+        input:focus, select:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(22, 122, 74, 0.2);
+        }
+
+        /* Buttons */
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: transform 0.1s, box-shadow 0.2s;
+        }
+        .btn:hover {
+            background: var(--primary-light);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+        [data-theme="dark"] .btn-outline {
+            color: var(--text-main);
+            border-color: var(--border-color);
+        }
+
+        /* Captcha */
+        .captcha-box {
+            background: rgba(0,0,0,0.02);
+            border: 1px dashed var(--border-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .captcha-text {
+            font-family: monospace;
+            font-size: 1.5rem;
+            font-weight: bold;
+            letter-spacing: 5px;
+            background: #e2e8f0;
+            color: #1a202c;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 1rem;
+            text-decoration: line-through; /* simple obfuscation */
+        }
+        .captcha-input {
+            max-width: 200px;
+            margin: 0 auto;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        /* Summary Table / Box */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            background: var(--bg-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        .summary-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .summary-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        .summary-value {
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--text-main);
+            margin-top: 0.25rem;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        /* Accordions and Document Viewer */
+        .accordion-item {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+        .accordion-header {
+            background: var(--surface-color);
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .accordion-header:hover {
+            background: var(--bg-color);
+        }
+        .accordion-header.active {
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(11, 74, 44, 0.05);
+        }
+        [data-theme="dark"] .accordion-header.active {
+            background: rgba(255,255,255,0.05);
+        }
+        .accordion-content {
+            display: none;
+            padding: 1.5rem;
+            background: var(--bg-color);
+        }
+        .accordion-content.active {
+            display: block;
+        }
+
+        /* Sub Accordion (Notificaciones) */
+        .sub-accordion {
+            margin-top: 1rem;
+            border-left: 3px solid var(--primary-light);
+            padding-left: 1rem;
+        }
+        .sub-accordion-item {
+            margin-top: 0.5rem;
+            background: var(--surface-color);
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+        .sub-accordion-item:hover {
+            border-color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .pdf-viewer-container {
+            margin-top: 1.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            height: 500px;
+            display: none;
+            background: #fff;
+        }
+        .pdf-viewer-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Floating Support Buttons */
+        .floating-buttons {
+            position: fixed;
+            bottom: 80px; /* Above timer */
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 90;
+        }
+        .float-btn {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            border: none;
+            transition: transform 0.2s;
+        }
+        .float-btn:hover {
+            transform: scale(1.1);
+            background: var(--primary-light);
+        }
+        .support-tooltip {
+            position: absolute;
+            right: 70px;
+            bottom: 0;
+            background: var(--surface-color);
+            color: var(--text-main);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            width: 250px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(20px);
+            transition: all 0.3s;
+        }
+        .support-tooltip.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+        }
+        .support-tooltip::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            bottom: 18px;
+            border-width: 8px 0 8px 8px;
+            border-style: solid;
+            border-color: transparent transparent transparent var(--surface-color);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--surface-color);
+            border-top: 1px solid var(--border-color);
+            padding: 2rem;
+            margin-bottom: 40px; /* timer bar space */
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-box {
+            padding: 1rem;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .footer-box i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        /* Sticky Timer Bar */
+        .timer-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--danger-color);
+            color: white;
+            padding: 0.5rem;
+            text-align: center;
+            font-weight: bold;
+            z-index: 101;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <h1>CEDIEJ <i class="fa-solid fa-scale-balanced"></i></h1>
+            <span>Centro de Datos e Información de Expedientes Judiciales</span>
+        </div>
+        <div class="header-controls">
+            <div class="clock-container">
+                <i class="fa-regular fa-clock"></i> <span id="current-clock">Cargando...</span>
+            </div>
+            <button class="theme-toggle" id="theme-btn" title="Cambiar Tema">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        
+        <!-- SEARCH VIEW -->
+        <section id="search-view">
+            <div class="card">
+                <h2>Búsqueda de Expedientes Judiciales</h2>
+                
+                <div class="tabs">
+                    <button class="tab-btn active" data-target="tab-codigo"><i class="fa-solid fa-hashtag"></i> Por Código</button>
+                    <button class="tab-btn" data-target="tab-filtros"><i class="fa-solid fa-filter"></i> Por Filtros</button>
+                </div>
+
+                <form id="search-form">
+                    
+                    <!-- Tab: Por Código -->
+                    <div id="tab-codigo" class="tab-content active">
+                        <div class="form-group">
+                            <label for="codigo-expediente">Número de Expediente Exacto</label>
+                            <input type="text" id="codigo-expediente" placeholder="Ej: 00845-2025-0-2101-CI-01">
+                            <small style="color: var(--text-muted); display:block; margin-top:0.5rem;">Debe ingresar el código completo del expediente (Número - Año - Cuaderno - Distrito - Especialidad - Instancia).</small>
+                        </div>
+                    </div>
+
+                    <!-- Tab: Por Filtros -->
+                    <div id="tab-filtros" class="tab-content">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="distrito">Distrito Judicial</label>
+                                <input type="text" id="distrito" placeholder="Ej: Puno">
+                            </div>
+                            <div class="form-group">
+                                <label for="instancia">Órgano Jurisdiccional (Instancia)</label>
+                                <input type="text" id="instancia" placeholder="Ej: Juzgado Penal">
+                            </div>
+                            <div class="form-group">
+                                <label for="especialidad">Especialidad</label>
+                                <input type="text" id="especialidad" placeholder="Ej: Civil">
+                            </div>
+                            <div class="form-group">
+                                <label for="ano">Año</label>
+                                <input type="number" id="ano" placeholder="Ej: 2025" min="1990" max="2100">
+                            </div>
+                            <div class="form-group">
+                                <label for="num-filtro">Número de Expediente</label>
+                                <input type="text" id="num-filtro" placeholder="Ej: 00845">
+                            </div>
+                            <div class="form-group">
+                                <label for="parte">Parte Interesada (Apellidos o Razón Social)</label>
+                                <input type="text" id="parte" placeholder="Ej: Quispe Mamani">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Captcha -->
+                    <div class="captcha-box">
+                        <p style="margin-bottom: 0.5rem; font-weight:600;">Verificación de Seguridad</p>
+                        <p style="font-size: 0.85rem; color:var(--text-muted); margin-bottom: 1rem;">Ingrese los caracteres mostrados a continuación para continuar:</p>
+                        <div class="captcha-text" id="captcha-display">X7Y9A</div>
+                        <div class="form-group">
+                            <input type="text" id="captcha-input" class="captcha-input" placeholder="Escriba aquí" required autocomplete="off">
+                            <div id="captcha-error" style="color: var(--danger-color); font-size: 0.85rem; margin-top: 0.5rem; display: none;">Captcha incorrecto. Intente nuevamente.</div>
+                        </div>
+                        <button type="button" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="generateCaptcha()"><i class="fa-solid fa-rotate-right"></i> Recargar</button>
+                    </div>
+
+                    <div style="text-align: center;">
+                        <button type="submit" class="btn"><i class="fa-solid fa-magnifying-glass"></i> Buscar Expediente</button>
+                        <button type="reset" class="btn btn-outline" style="margin-left: 1rem;"><i class="fa-solid fa-eraser"></i> Limpiar</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- DETAIL VIEW -->
+        <section id="detail-view" style="display: none;">
+            <button class="btn btn-outline" onclick="backToSearch()" style="margin-bottom: 1.5rem;">
+                <i class="fa-solid fa-arrow-left"></i> Volver a Buscar
+            </button>
+
+            <!-- Top Zone: Overview -->
+            <div class="card">
+                <h2>Detalle del Expediente Judicial</h2>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <span class="summary-label">N° Expediente</span>
+                        <span class="summary-value" id="det-expediente">00110-2023-0-2114-JP-FC-01</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Órgano Jurisdiccional</span>
+                        <span class="summary-value" id="det-organo">1° Juzgado de Paz Letrado</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Juez</span>
+                        <span class="summary-value" id="det-juez">Dr. Castillo Suaquita Raul Romulo</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Distrito Judicial</span>
+                        <span class="summary-value" id="det-distrito">Puno</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Proceso</span>
+                        <span class="summary-value" id="det-proceso">Unico</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Especialidad</span>
+                        <span class="summary-value" id="det-especialidad">Familiar Civil</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Materia</span>
+                        <span class="summary-value" id="det-materia">Aumento de Alimentos</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Estado</span>
+                        <span class="summary-value"><span class="badge" id="det-estado">En Ejecución</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Zone: Escritos and Notificaciones -->
+            <div class="card">
+                <h2>Partes del Expediente (Escritos y Resoluciones)</h2>
+                <p style="color: var(--text-muted); margin-bottom: 1.5rem; font-size:0.9rem;">
+                    Haga clic en un escrito para visualizar el documento PDF adjunto. Las notificaciones relacionadas se enumeran debajo.
+                </p>
+
+                <!-- Document List generated by JS -->
+                <div id="escritos-container">
+                    <!-- Example Accordion Item -->
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this, 'test.pdf')">
+                            <div>
+                                <i class="fa-solid fa-file-pdf" style="color:#e53e3e; margin-right:8px;"></i>
+                                Escrito - Demanda
+                            </div>
+                            <i class="fa-solid fa-chevron-down indicator"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <!-- Viewer for Main Escrito -->
+                            <div class="pdf-action" style="margin-bottom: 1rem;">
+                                <button class="btn btn-outline" style="font-size:0.8rem; padding:0.4rem 0.8rem;" onclick="viewPdf('https://drive.google.com/file/d/131u2I1RbJdUruFdEBdeGXZ-m0x9s_Eig/preview')">
+                                    <i class="fa-solid fa-eye"></i> Visualizar Escrito Demanda en el panel
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                    
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <div>
+                                <i class="fa-solid fa-file-pdf" style="color:#e53e3e; margin-right:8px;"></i>
+                                Resolución de Admisión - Resolución Nro. 01
+                            </div>
+                            <i class="fa-solid fa-chevron-down indicator"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="pdf-action" style="margin-bottom: 1rem;">
+                                <button class="btn btn-outline" style="font-size:0.8rem; padding:0.4rem 0.8rem;" onclick="viewPdf('https://drive.google.com/file/d/1-pL6PaAGCyq3aTQ2bLxUCyUIpQYTbhpy/preview')">
+                                    <i class="fa-solid fa-eye"></i> Visualizar Resolución
+                                </button>
+                            </div>
+                            <h4>Notificaciones Asociadas</h4>
+                            <div class="sub-accordion">
+                                <div class="sub-accordion-item" onclick="viewPdf('https://drive.google.com/file/d/1Sm3NZiacVBzvmdxGBNTIlyrE3hj5hR18/preview')">
+                                    <i class="fa-regular fa-bell"></i> Notificación - Resolución Nro. 01
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bloque 3 -->
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <div>
+                                <i class="fa-solid fa-file-pdf" style="color:#e53e3e; margin-right:8px;"></i>
+                                Escrito – Absolución
+                            </div>
+                            <i class="fa-solid fa-chevron-down indicator"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="pdf-action" style="margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                                <button class="btn btn-outline" style="font-size:0.8rem; padding:0.4rem 0.8rem; width: 100%; text-align: left; justify-content: flex-start;" onclick="viewPdf('https://drive.google.com/file/d/1LgC4GTGyfooR23CF_bs6wZdP6V0iNzJw/preview')">
+                                    <i class="fa-solid fa-eye"></i> Visualizar Escrito – Absolución
+                                </button>
+                                <button class="btn btn-outline" style="font-size:0.8rem; padding:0.4rem 0.8rem; width: 100%; text-align: left; justify-content: flex-start;" onclick="viewPdf('https://drive.google.com/file/d/1NQ6junnlThebI2ZQyGculefVHDEg3hvj/preview')">
+                                    <i class="fa-solid fa-eye"></i> Visualizar Escrito – Corrige Absolución
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bloque 4 -->
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <div>
+                                <i class="fa-solid fa-file-pdf" style="color:#e53e3e; margin-right:8px;"></i>
+                                Escrito – Declárese Consentida
+                            </div>
+                            <i class="fa-solid fa-chevron-down indicator"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="pdf-action" style="margin-bottom: 1rem;">
+                                <button class="btn btn-outline" style="font-size:0.8rem; padding:0.4rem 0.8rem;" onclick="viewPdf('https://drive.google.com/file/d/14HLAMeANyTnPS5ZEpp7geGSh5xzl2F_M/preview')">
+                                    <i class="fa-solid fa-eye"></i> Visualizar Escrito
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bloque 5 -->
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <div>
+                                <i class="fa-solid fa-file-pdf" style="color:#e53e3e; margin-right:8px;"></i>
+                                Acta de Audiencia Única - Resolución Nro. 02 y Resolución Nro. 03
+                            </div>
+                            <i class="fa-solid fa-chevron-down indicator"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="pdf-action" style="margin-bottom: 1rem;">
+                                <button class="btn btn-outline" style="font-size:0.8rem; padding:0.4rem 0.8rem;" onclick="viewPdf('https://drive.google.com/file/d/1NXVSih2VBsWYYHYCvMl_OOjziswgzikN/preview')">
+                                    <i class="fa-solid fa-eye"></i> Visualizar Acta y Resolución
+                                </button>
+                            </div>
+                            <h4>Notificaciones Asociadas</h4>
+                            <div class="sub-accordion">
+                                <div class="sub-accordion-item" onclick="viewPdf('https://drive.google.com/file/d/1igbJy6Re03WaV_rCss7phbdTzLKCtd-7/preview')">
+                                    <i class="fa-regular fa-bell"></i> Notificación - Resolución Nro. 02 y Resolución Nro. 03
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bloque 6 -->
+                    <div class="accordion-item">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <div>
+                                <i class="fa-solid fa-file-pdf" style="color:#e53e3e; margin-right:8px;"></i>
+                                Declarar Consentida – Resolución 04
+                            </div>
+                            <i class="fa-solid fa-chevron-down indicator"></i>
+                        </div>
+                        <div class="accordion-content">
+                            <div class="pdf-action" style="margin-bottom: 1rem;">
+                                <button class="btn btn-outline" style="font-size:0.8rem; padding:0.4rem 0.8rem;" onclick="viewPdf('https://drive.google.com/file/d/1PaDoUslfy1AkQ4GNNvaNpviuFHvYPvp6/preview')">
+                                    <i class="fa-solid fa-eye"></i> Visualizar Resolución
+                                </button>
+                            </div>
+                            <h4>Notificaciones Asociadas</h4>
+                            <div class="sub-accordion">
+                                <div class="sub-accordion-item" onclick="viewPdf('https://drive.google.com/file/d/1FTS7MzJcVPJPaFJ_25IUGwUEeMu8lR89/preview')">
+                                    <i class="fa-regular fa-bell"></i> Notificación – Resolución Nro. 04
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PDF Viewer Area -->
+                <div class="pdf-viewer-container" id="pdf-viewer">
+                    <div style="padding: 1rem; background: var(--bg-color); border-bottom: 1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center;">
+                        <strong>Visor de Documentos</strong>
+                        <button class="btn btn-outline" style="padding:0.2rem 0.5rem; font-size:0.8rem;" onclick="document.getElementById('pdf-viewer').style.display='none'">Cerrar Visor</button>
+                    </div>
+                    <iframe id="pdf-frame" src="" title="Visor PDF"></iframe>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-box">
+                <i class="fa-solid fa-scale-balanced"></i>
+                <strong>CEDIEJ</strong>
+                Aplicación Web Centralizada
+            </div>
+            <div class="footer-box">
+                <i class="fa-solid fa-code"></i>
+                <strong>Desarrollador</strong>
+                Proyecto hecho por Gerson Mosheh Hurtado Salas
+            </div>
+            <div class="footer-box">
+                <i class="fa-solid fa-book-bookmark"></i>
+                <strong>Materia</strong>
+                Gobierno Digital y Derecho Informático 2026 - II
+            </div>
+            <div class="footer-box">
+                <i class="fa-regular fa-copyright"></i>
+                <strong>Licencia</strong>
+                Todos los derechos reservados &copy; 2026
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Support Button -->
+    <div class="floating-buttons">
+        <div class="support-tooltip" id="support-tooltip">
+            <strong>Contactar a Soporte</strong><br><br>
+            <i class="fa-solid fa-phone" style="color:var(--primary-light)"></i> Llame al siguiente número:<br>
+            <span style="font-size:1.1rem; font-weight:bold; color:var(--primary-color);">+51 944545212</span>
+        </div>
+        <button class="float-btn" onclick="toggleSupportTooltip()" title="Soporte y Ayuda">
+            <i class="fa-solid fa-headset"></i>
+        </button>
+    </div>
+
+    <!-- Sticky Timer Bar -->
+    <div class="timer-bar" id="timer-bar">
+        <i class="fa-solid fa-hourglass-half"></i> 
+        Tiempo restante sesión: <span id="timer-display">07:00</span>
+    </div>
+
+    <script>
+        /* ========================
+           Theme Toggle (Light/Dark)
+           ======================== */
+        const themeBtn = document.getElementById('theme-btn');
+        const rootHtml = document.documentElement;
+        
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        rootHtml.setAttribute('data-theme', currentTheme);
+        updateThemeIcon();
+
+        themeBtn.addEventListener('click', () => {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            rootHtml.setAttribute('data-theme', currentTheme);
+            localStorage.setItem('theme', currentTheme);
+            updateThemeIcon();
+        });
+
+        function updateThemeIcon() {
+            if(currentTheme === 'dark') {
+                themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+            } else {
+                themeBtn.innerHTML = '<i class="fa-solid fa-moon"></i>';
+            }
+        }
+
+        /* ========================
+           Clock & Date
+           ======================== */
+        function updateClock() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second:'2-digit' };
+            const formatted = now.toLocaleDateString('es-PE', options);
+            document.getElementById('current-clock').textContent = formatted;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        /* ========================
+           Timer for Auto Logout
+           ======================== */
+        let timerInterval;
+        const totalTime = 7 * 60; // 7 minutes in seconds
+
+        function startTimer() {
+            let timeRemaining = totalTime;
+            const timerDisplay = document.getElementById('timer-display');
+            
+            clearInterval(timerInterval);
+
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                
+                let minutes = Math.floor(timeRemaining / 60);
+                let seconds = timeRemaining % 60;
+                
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Tiempo agotado. Regresando al inicio por su seguridad");
+                    resetApp();
+                }
+            }, 1000);
+        }
+
+        function resetApp() {
+            // Reset to search view and clean form
+            document.getElementById('search-form').reset();
+            backToSearch();
+            startTimer(); // Restart timer
+            generateCaptcha(); // Refresh captcha
+        }
+
+        /* ========================
+           Search Tabs Logic
+           ======================== */
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contents = document.querySelectorAll('.tab-content');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                tabs.forEach(t => t.classList.remove('active'));
+                contents.forEach(c => c.classList.remove('active'));
+
+                tab.classList.add('active');
+                document.getElementById(tab.dataset.target).classList.add('active');
+            });
+        });
+
+        /* ========================
+           Captcha Logic
+           ======================== */
+        let currentCaptcha = "";
+        function generateCaptcha() {
+            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // Removed easily confusing chars like O,0,I,1
+            currentCaptcha = "";
+            for (let i = 0; i < 5; i++) {
+                currentCaptcha += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById('captcha-display').textContent = currentCaptcha;
+            document.getElementById('captcha-input').value = '';
+            document.getElementById('captcha-error').style.display = 'none';
+        }
+        
+        // Initialize everything
+        generateCaptcha();
+        startTimer();
+
+        /* ========================
+           Form Submission & Views
+           ======================== */
+        const searchForm = document.getElementById('search-form');
+        searchForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const userInput = document.getElementById('captcha-input').value.toUpperCase();
+            if (userInput !== currentCaptcha) {
+                document.getElementById('captcha-error').style.display = 'block';
+                return;
+            }
+
+            // Valid, proceed to detail
+            document.getElementById('search-view').style.display = 'none';
+            document.getElementById('detail-view').style.display = 'block';
+            
+            // To simulate dynamic data, we could fetch from localStorage here.
+            // For now, it shows the dummy HTML data inside the view.
+            
+            // Re-generate captcha for next time
+            generateCaptcha();
+        });
+
+        function backToSearch() {
+            document.getElementById('detail-view').style.display = 'none';
+            document.getElementById('search-view').style.display = 'block';
+            document.getElementById('pdf-viewer').style.display = 'none';
+        }
+
+        /* ========================
+           Accordions & PDF Viewer
+           ======================== */
+        function toggleAccordion(element) {
+            const content = element.nextElementSibling;
+            const icon = element.querySelector('.indicator');
+            const isActive = content.classList.contains('active');
+            
+            document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.accordion-header').forEach(h => h.classList.remove('active'));
+            document.querySelectorAll('.indicator').forEach(i => {
+                i.classList.remove('fa-chevron-up');
+                i.classList.add('fa-chevron-down');
+            });
+
+            if (!isActive) {
+                content.classList.add('active');
+                element.classList.add('active');
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            }
+        }
+
+        function viewPdf(url) {
+            const viewer = document.getElementById('pdf-viewer');
+            const frame = document.getElementById('pdf-frame');
+            
+            // This is a test PDF hosted on W3C. In reality it will load local or provided link.
+            frame.src = url;
+            viewer.style.display = 'block';
+            
+            // Scroll to viewer
+            viewer.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
+
+        /* ========================
+           Floating Support Button
+           ======================== */
+        function toggleSupportTooltip() {
+            const tooltip = document.getElementById('support-tooltip');
+            tooltip.classList.toggle('active');
+        }
+
+        // Close tooltip if clicked outside
+        document.addEventListener('click', (e) => {
+            const tooltip = document.getElementById('support-tooltip');
+            const floatBtn = document.querySelector('.float-btn');
+            if (e.target !== tooltip && !tooltip.contains(e.target) && e.target !== floatBtn && !floatBtn.contains(e.target)) {
+                tooltip.classList.remove('active');
+            }
+        });
+
+    </script>
+</body>
+</html>

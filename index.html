@@ -446,6 +446,275 @@
             border-color: transparent transparent transparent var(--surface-color);
         }
 
+        /* Timeline */
+        .timeline {
+            position: relative;
+            max-width: 100%;
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            background-color: var(--border-color);
+            top: 0;
+            bottom: 0;
+            left: 7px;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+        .timeline-dot {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            left: -38px;
+            background-color: var(--bg-color);
+            border: 4px solid var(--primary-color);
+            top: 4px;
+            border-radius: 50%;
+            z-index: 1;
+            box-shadow: 0 0 0 4px var(--surface-color);
+        }
+        [data-theme="dark"] .timeline-dot {
+            background-color: var(--surface-color);
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 4px var(--bg-color);
+        }
+        .timeline-content {
+            background-color: var(--bg-color);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+        .timeline-content strong {
+            display: block;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+        .timeline-content p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Parties Table */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .parties-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            margin-top: 1rem;
+        }
+        .parties-table th, .parties-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .parties-table th {
+            background-color: var(--bg-color);
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+        .parties-table tr:hover {
+            background-color: rgba(0,0,0,0.02);
+        }
+        [data-theme="dark"] .parties-table tr:hover {
+            background-color: rgba(255,255,255,0.02);
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            backdrop-filter: blur(4px);
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-content {
+            background: var(--surface-color);
+            width: 100%;
+            max-width: 550px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            animation: modalFadeIn 0.3s ease;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .close-modal {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .reniec-card {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+        .reniec-photo {
+            flex-shrink: 0;
+            width: 130px;
+            height: 170px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .reniec-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .reniec-data {
+            flex: 1;
+        }
+        .reniec-data p {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+        .biometric-confirm {
+            margin-top: 1.2rem;
+            background: #c6f6d5;
+            color: #22543d;
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid #9ae6b4;
+        }
+        [data-theme="dark"] .biometric-confirm {
+            background: rgba(34, 84, 61, 0.2);
+            color: #9ae6b4;
+            border-color: rgba(154, 230, 180, 0.3);
+        }
+
+        /* Chat Window */
+        .chat-window {
+            position: fixed;
+            bottom: 150px;
+            right: 85px;
+            width: 320px;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            display: none;
+            flex-direction: column;
+            z-index: 95;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+        .chat-window.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .chat-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+        .close-chat {
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        .chat-messages {
+            height: 250px;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            background: var(--bg-color);
+        }
+        .message {
+            max-width: 80%;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        .bot-message {
+            background: var(--surface-color);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            align-self: flex-start;
+            border-bottom-left-radius: 0;
+        }
+        .user-message {
+            background: var(--primary-light);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 0;
+        }
+        .chat-input-area {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 0.5rem;
+            background: var(--surface-color);
+        }
+        .chat-input-area input {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            outline: none;
+            background: var(--bg-color);
+            color: var(--text-main);
+        }
+
         /* Footer */
         footer {
             background: var(--surface-color);
@@ -496,6 +765,31 @@
             align-items: center;
             gap: 0.5rem;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        }
+        /* Academic Disclaimer */
+        .academic-disclaimer {
+            position: fixed;
+            bottom: 60px; /* Above the timer */
+            left: 20px;
+            background: var(--surface-color);
+            border-left: 4px solid #d69e2e;
+            padding: 1rem;
+            max-width: 300px;
+            box-shadow: var(--shadow-md);
+            border-radius: 4px;
+            z-index: 90;
+            font-size: 0.8rem;
+            color: var(--text-main);
+            opacity: 0.85;
+            transition: opacity 0.3s;
+        }
+        .academic-disclaimer:hover {
+            opacity: 1;
+        }
+        .academic-disclaimer strong {
+            display: block;
+            margin-bottom: 0.4rem;
+            color: #d69e2e;
         }
         
     </style>
@@ -633,6 +927,100 @@
                     <div class="summary-item">
                         <span class="summary-label">Estado</span>
                         <span class="summary-value"><span class="badge" id="det-estado">En Ejecución</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Partes Procesales Zone -->
+            <div class="card">
+                <h2>Partes Procesales</h2>
+                <div class="table-responsive">
+                    <table class="parties-table">
+                        <thead>
+                            <tr>
+                                <th>Rol</th>
+                                <th>Apellido Paterno / Razón Social</th>
+                                <th>Apellido Materno</th>
+                                <th>Nombres</th>
+                                <th>Identidad</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="badge" style="background:#eebfdb; color:#701a4f;">Demandante</span></td>
+                                <td>CO*****</td>
+                                <td>CO*****</td>
+                                <td>MA*********</td>
+                                <td>76******</td>
+                                <td>
+                                    <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;" onclick="openReniecModal('76******', 'MA*********', 'CO***** CO*****', 'Demandante', 'https://www.w3schools.com/howto/img_avatar2.png')">
+                                        <i class="fa-solid fa-id-card"></i> Validar en RENIEC
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span class="badge" style="background:#bfdcee; color:#1a4f70;">Demandado</span></td>
+                                <td>QU****</td>
+                                <td>MA****</td>
+                                <td>JU*********</td>
+                                <td>45******</td>
+                                <td>
+                                    <button class="btn btn-outline" style="font-size: 0.8rem; padding: 0.4rem 0.8rem;" onclick="openReniecModal('45******', 'JU*********', 'QU**** MA****', 'Demandado', 'https://www.w3schools.com/howto/img_avatar.png')">
+                                        <i class="fa-solid fa-id-card"></i> Validar en RENIEC
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Timeline Zone -->
+            <div class="card">
+                <h2>Línea de Tiempo del Expediente</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <strong>Escrito - Demanda</strong>
+                            <p>Documento inicial presentado.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <strong>Resolución de Admisión - Resolución Nro. 01</strong>
+                            <p>Notificación asociada: Resolución Nro. 01.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <strong>Escrito – Absolución</strong>
+                            <p>Incluye: Escrito – Corrige Absolución.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <strong>Escrito – Declárese Consentida</strong>
+                            <p>Solicitud de parte para declarar consentida la resolución.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <strong>Acta de Audiencia Única - Resolución Nro. 02 y Resolución Nro. 03</strong>
+                            <p>Notificación asociada: Resolución Nro. 02 y Resolución Nro. 03.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        <div class="timeline-content">
+                            <strong>Declarar Consentida – Resolución 04</strong>
+                            <p>Notificación asociada: Resolución Nro. 04.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -816,8 +1204,63 @@
         </div>
     </footer>
 
-    <!-- Floating Support Button -->
+    <!-- Loading Overlay -->
+    <div class="modal-overlay" id="loading-overlay" style="z-index: 210;">
+        <div class="modal-content" style="max-width: 350px; text-align: center; padding: 2rem;">
+            <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 3rem; color: var(--primary-color); margin-bottom: 1rem;"></i>
+            <p style="font-weight: 600; font-size: 1.1rem; margin-bottom: 0.5rem;">Contactando con RENIEC...</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted);">Verificando datos de identidad biométrica</p>
+        </div>
+    </div>
+
+    <!-- RENIEC Modal -->
+    <div class="modal-overlay" id="reniec-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-fingerprint"></i> Verificación RENIEC</h3>
+                <button class="close-modal" onclick="closeReniecModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="reniec-card">
+                    <div class="reniec-photo">
+                        <img id="reniec-img" src="" alt="Foto DNI">
+                    </div>
+                    <div class="reniec-data">
+                        <h4 style="color: var(--primary-color); margin-bottom:1rem; font-size:1.1rem;"><i class="fa-solid fa-circle-check"></i> Identidad Verificada</h4>
+                        <p><strong>DNI:</strong> <span id="reniec-dni"></span></p>
+                        <p><strong>Nombres:</strong> <span id="reniec-nombres"></span></p>
+                        <p><strong>Apellidos:</strong> <span id="reniec-apellidos"></span></p>
+                        <p><strong>Rol Procesal:</strong> <span id="reniec-rol"></span></p>
+                        
+                        <div class="biometric-confirm">
+                            <i class="fa-solid fa-shield-check"></i> Coincidencia biométrica exacta
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Window -->
+    <div class="chat-window" id="chat-window">
+        <div class="chat-header">
+            <span><i class="fa-solid fa-robot"></i> Asistente Legal (IA)</span>
+            <button class="close-chat" onclick="toggleChat()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot-message">Hola, soy el asistente de CEDIEJ. ¿En qué te puedo ayudar? Puedo darte el <strong>resumen</strong> del expediente actual.</div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="chat-input" placeholder="Escribe un mensaje..." onkeypress="handleChatKeyPress(event)">
+            <button class="btn" style="padding: 0.5rem 1rem;" onclick="sendChatMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+
+    <!-- Floating Support Button & Chatbot -->
     <div class="floating-buttons">
+        <button class="float-btn" onclick="toggleChat()" title="Asistente Legal IA" style="background-color: #2b6cb0;">
+            <i class="fa-solid fa-robot"></i>
+        </button>
         <div class="support-tooltip" id="support-tooltip">
             <strong>Contactar a Soporte</strong><br><br>
             <i class="fa-solid fa-phone" style="color:var(--primary-light)"></i> Llame al siguiente número:<br>
@@ -826,6 +1269,12 @@
         <button class="float-btn" onclick="toggleSupportTooltip()" title="Soporte y Ayuda">
             <i class="fa-solid fa-headset"></i>
         </button>
+    </div>
+
+    <!-- Academic Disclaimer -->
+    <div class="academic-disclaimer">
+        <strong><i class="fa-solid fa-triangle-exclamation"></i> Simulación de Carácter Académico</strong>
+        Este sistema es una plataforma de simulación con fines exclusivamente académicos. Todos los nombres, hechos e información contenidos en él han sido modificados y anonimizados para garantizar la privacidad. Esta simulación no guarda relación alguna con el Poder Judicial ni con ninguna otra institución pública o privada.
     </div>
 
     <!-- Sticky Timer Bar -->
@@ -1017,12 +1466,124 @@
             tooltip.classList.toggle('active');
         }
 
-        // Close tooltip if clicked outside
+        /* ========================
+           Chatbot Logic
+           ======================== */
+        function toggleChat() {
+            const chatWindow = document.getElementById('chat-window');
+            if (chatWindow.style.display === 'flex') {
+                chatWindow.classList.remove('active');
+                setTimeout(() => chatWindow.style.display = 'none', 300);
+            } else {
+                chatWindow.style.display = 'flex';
+                setTimeout(() => chatWindow.classList.add('active'), 10);
+                document.getElementById('chat-input').focus();
+            }
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                sendChatMessage();
+            }
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (text === '') return;
+
+            appendMessage(text, 'user-message');
+            input.value = '';
+
+            // Bot Response Logic
+            setTimeout(() => {
+                let response = "";
+                const lowerText = text.toLowerCase();
+                
+                if (lowerText.includes('resumen') || lowerText.includes('expediente')) {
+                    // Verificamos si estamos en la vista de detalle
+                    const detailView = document.getElementById('detail-view');
+                    if (detailView.style.display === 'block') {
+                        const exp = document.getElementById('det-expediente')?.innerText || "Desconocido";
+                        const materia = document.getElementById('det-materia')?.innerText || "Desconocida";
+                        const estado = document.getElementById('det-estado')?.innerText || "Desconocido";
+                        const organo = document.getElementById('det-organo')?.innerText || "Desconocido";
+                        const juez = document.getElementById('det-juez')?.innerText || "Desconocido";
+                        
+                        response = `Aquí tienes el resumen del expediente actual:<br><br>
+                        <strong>N°:</strong> ${exp}<br>
+                        <strong>Órgano:</strong> ${organo}<br>
+                        <strong>Juez:</strong> ${juez}<br>
+                        <strong>Materia:</strong> ${materia}<br>
+                        <strong>Estado:</strong> ${estado}<br><br>
+                        Este es un proceso de ${materia} y actualmente se encuentra en la etapa de ${estado}.`;
+                    } else {
+                        response = "Actualmente no estás viendo ningún expediente. Por favor, busca y selecciona un expediente primero para darte su resumen.";
+                    }
+                } else if (lowerText.includes('hola') || lowerText.includes('saludos') || lowerText.includes('buenas')) {
+                    response = "¡Hola! ¿Deseas un resumen del expediente actual o tienes alguna otra consulta?";
+                } else {
+                    response = "Entiendo. Sin embargo, soy un asistente especializado en brindarte el resumen del expediente. Por favor, pídeme un 'resumen'.";
+                }
+                
+                appendMessage(response, 'bot-message');
+            }, 800);
+        }
+
+        function appendMessage(text, className) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${className}`;
+            msgDiv.innerHTML = text; // Allow HTML in bot response
+            messagesContainer.appendChild(msgDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Close tooltip/chat if clicked outside
         document.addEventListener('click', (e) => {
             const tooltip = document.getElementById('support-tooltip');
-            const floatBtn = document.querySelector('.float-btn');
-            if (e.target !== tooltip && !tooltip.contains(e.target) && e.target !== floatBtn && !floatBtn.contains(e.target)) {
+            const floatBtn = document.querySelectorAll('.float-btn');
+            
+            // Support tooltip logic
+            let isClickInsideSupport = tooltip.contains(e.target);
+            let isClickOnBtn = false;
+            floatBtn.forEach(btn => {
+                if (btn.contains(e.target)) isClickOnBtn = true;
+            });
+
+            if (!isClickInsideSupport && !isClickOnBtn) {
                 tooltip.classList.remove('active');
+            }
+        });
+
+        /* ========================
+           RENIEC Modal Logic
+           ======================== */
+        function openReniecModal(dni, nombres, apellidos, rol, imgSrc) {
+            const loadingOverlay = document.getElementById('loading-overlay');
+            loadingOverlay.classList.add('active');
+            
+            setTimeout(() => {
+                loadingOverlay.classList.remove('active');
+                
+                document.getElementById('reniec-dni').textContent = dni;
+                document.getElementById('reniec-nombres').textContent = nombres;
+                document.getElementById('reniec-apellidos').textContent = apellidos;
+                document.getElementById('reniec-rol').textContent = rol;
+                document.getElementById('reniec-img').src = imgSrc;
+                
+                document.getElementById('reniec-modal').classList.add('active');
+            }, 1800); // Simulated delay of 1.8 seconds
+        }
+        function closeReniecModal() {
+            document.getElementById('reniec-modal').classList.remove('active');
+        }
+
+        // Close modal if clicked outside
+        document.getElementById('reniec-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeReniecModal();
             }
         });
 
